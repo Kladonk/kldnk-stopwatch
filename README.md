@@ -10,5 +10,5 @@ In order to compile the plugin, you will need to setup the obs-studio build envi
 5. Run **make && make package** to create the executable.
 
 ## Final notes
-* The plugin is currently tested for Mac only. I will test it on windows in a few days.
+* The plugin is currently tested for Mac only. I will test it on Windows in a few days.
 * Feel free to send me feedback so I can improve the plugin.
