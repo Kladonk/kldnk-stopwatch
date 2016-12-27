@@ -169,9 +169,9 @@ static void update_stopwatch_text(stopwatch_source_t *stopwatch)
 
 static obs_properties_t *stopwatch_source_properties(void *data)
 {
-	stopwatch_source_t *stopwatch = data;
+    stopwatch_source_t *stopwatch = data;
 
-	obs_properties_t *props = obs_source_properties(stopwatch->textSource);
+    obs_properties_t *props = obs_source_properties(stopwatch->textSource);
     obs_property_t *prop = obs_properties_first(props);
     while (prop)
     {
@@ -181,7 +181,7 @@ static obs_properties_t *stopwatch_source_properties(void *data)
         }
         obs_property_next(&prop);
     }
-	return props;
+    return props;
 }
 
 static bool is_property_visible(obs_property_t *prop)
