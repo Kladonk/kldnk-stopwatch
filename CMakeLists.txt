@@ -1,7 +1,10 @@
 project(kldnk-stopwatch)
 
 set(kldnk-stopwatch_SOURCES
-	kldnk-stopwatch.h
+	time-util.h
+	time-util.c
+	stopwatch-wrapper.h
+	stopwatch-wrapper.c
 	kldnk-stopwatch.c
 	)
 
