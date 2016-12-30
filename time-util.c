@@ -11,6 +11,5 @@ time_info_t *millis_to_time(uint32_t millis)
     time_info->minutes = millis % 60;
     millis /= 60;
     time_info->hours = millis % 60;
-    millis /= 60;
     return time_info;
 }
