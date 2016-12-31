@@ -1,4 +1,6 @@
 #include "stopwatch-wrapper.h"
+#include "stopwatch-settings.h"
+#include "stopwatch-type.h"
 #include "time-util.h"
 #include <obs-module.h>
 #include <obs-internal.h>
@@ -10,18 +12,13 @@
 #define TEXT_SOURCE_ID                          "text_ft2_source\0"
 
 /**
- * Update the Stopwatch source every X milliseconds
+ * Update the stopwatch every X milliseconds
  */
  #define UPDATE_AFTER_MILLIS                    15
 
 /*
- * Define settings
+ * Define hotkeys
  */
-#define SETTING_TYPE                            "type"
-#define SETTING_TYPE_COUNTUP                    "type_countup"
-#define SETTING_TYPE_COUNTDOWN                  "type_countdown"
-#define SETTING_COUNTUP_ENDVALUE                "countup_endvalue"
-#define SETTING_COUNTDOWN_INITIALVALUE          "countdown_initialvalue"
 #define HOTKEY_STOPWATCH_TOGGLE                 "kldnk_stopwatch_toggle"
 #define HOTKEY_STOPWATCH_RESET                  "kldnk_stopwatch_reset"
 
@@ -45,7 +42,7 @@
 struct stopwatch_source {
     obs_source_t *source;
     obs_source_t *textSource;
-    enum stopwatch_type type;
+    stopwatch_type type;
     uint32_t time_elapsed;
     uint32_t total_time_elapsed;
     uint32_t initial_value;
@@ -85,10 +82,11 @@ void stop(stopwatch_source_t *stopwatch)
 
 bool check_if_finished(stopwatch_source_t *stopwatch)
 {
-    return ((stopwatch->type == STOPWATCH_TYPE_COUNTUP) &&
+	return false;
+   /* return ((stopwatch->type == STOPWATCH_TYPE_COUNTUP) &&
         (stopwatch->total_time_elapsed >= stopwatch->end_value)) ||
         ((stopwatch->type == STOPWATCH_TYPE_COUNTDOWN) &&
-        (stopwatch->initial_value - stopwatch->total_time_elapsed <= 0));
+        (stopwatch->initial_value - stopwatch->total_time_elapsed <= 0));*/
 }
 
 
@@ -143,14 +141,14 @@ static void *stopwatch_source_create(obs_data_t *settings, obs_source_t *source)
     struct stopwatch_source *stopwatch = bzalloc(sizeof(stopwatch_source_t));
     stopwatch->source = source;
     stopwatch->textSource = obs_source_create(TEXT_SOURCE_ID, TEXT_SOURCE_ID, settings, NULL);
-    stopwatch->type = STOPWATCH_TYPE_COUNTUP;
+    stopwatch->type = settings_get_type(settings);
     reset(stopwatch);
 
     obs_source_add_active_child(stopwatch->source, stopwatch->textSource);
 
-    update_stopwatch_text(stopwatch);
+	init_stopwatch_hotkeys(stopwatch);
 
-    init_stopwatch_hotkeys(stopwatch);
+    update_stopwatch_text(stopwatch);
 
     return stopwatch;
 }
@@ -174,7 +172,7 @@ static void stopwatch_enable_hotkey_pressed(void *data, obs_hotkey_id id, obs_ho
     stopwatch_source_t *stopwatch = data;
     if (pressed && stopwatch)
     {
-        if (stopwatch->enabled)
+        if (is_enabled(stopwatch))
         {
             stop(stopwatch);
         }
@@ -192,10 +190,9 @@ static void stopwatch_enable_hotkey_pressed(void *data, obs_hotkey_id id, obs_ho
 static void stopwatch_reset_hotkey_pressed(void *data, obs_hotkey_id id, obs_hotkey_t *hotkey, bool pressed)
 {
     stopwatch_source_t *stopwatch = data;
-    if (pressed && stopwatch && is_enabled(stopwatch))
+    if (pressed && stopwatch && !is_enabled(stopwatch))
     {
-        reset(stopwatch)
-
+		reset(stopwatch);
         update_stopwatch_text(stopwatch);
     }
 
@@ -225,21 +222,14 @@ static void stopwatch_source_update(void *data, obs_data_t *settings)
 {
     stopwatch_source_t *stopwatch = data;
 
-    const char *type = obs_data_get_string(settings, SETTING_TYPE);
-    if (strcmp(type, SETTING_TYPE_COUNTDOWN) == 0 && stopwatch->type == STOPWATCH_TYPE_COUNTUP)
-    {
-        stopwatch->type = STOPWATCH_TYPE_COUNTUP;
-        reset(stopwatch);
-    }
-    else if (strcmp(type, SETTING_TYPE_COUNTUP) == 0 && stopwatch->type == STOPWATCH_TYPE_COUNTDOWN)
-    {
-        stopwatch->type = STOPWATCH_TYPE_COUNTDOWN;
-        reset(stopwatch);
-    }
+	stopwatch_type new_stopwatch_type = settings_get_type(settings);
+	if (stopwatch->type != new_stopwatch_type)
+	{
+		stopwatch->type = new_stopwatch_type;
+		reset(stopwatch);
+	}
 
-    update_stopwatch_text(stopwatch);
-
-    UNUSED_PARAMETER(settings);
+	update_stopwatch_text(stopwatch);
 }
 
 
@@ -270,7 +260,7 @@ static void stopwatch_source_tick(void *data, float seconds)
 {
     stopwatch_source_t *stopwatch = data;
 
-    if (stopwatch->enabled)
+    if (is_enabled(stopwatch))
     {
         uint32_t millis = seconds * 1000;
         update(stopwatch, millis);
@@ -286,13 +276,8 @@ static void stopwatch_source_tick(void *data, float seconds)
 
 static void update_stopwatch_text(stopwatch_source_t *stopwatch)
 {
-    time_info_t *ti = millis_to_time(stopwatch->total_time_elapsed);
-
-    char text[9]; // hh:mm:ss\0
-    snprintf(text, sizeof(text), "%02d:%02d:%02d", ti->hours, ti->minutes, ti->seconds);
-    bfree(ti);
-
-    obs_data_set_string(stopwatch->textSource->context.settings, "text", text);
+	const char *time_string = millis_to_string(stopwatch->total_time_elapsed);
+    obs_data_set_string(stopwatch->textSource->context.settings, "text", time_string);
     obs_source_update(stopwatch->textSource, stopwatch->textSource->context.settings);
 }
 
@@ -343,13 +328,11 @@ static obs_properties_t *stopwatch_source_properties(void *data)
 
 static bool stopwatch_type_changed(obs_properties_t *props, obs_property_t *property, obs_data_t *settings)
 {
-    const char *type = obs_data_get_string(settings, SETTING_TYPE);
-
-    set_property_visibility(props, SETTING_COUNTUP_ENDVALUE, strcmp(type, SETTING_TYPE_COUNTUP) == 0);
-    set_property_visibility(props, SETTING_COUNTDOWN_INITIALVALUE, strcmp(type, SETTING_TYPE_COUNTDOWN) == 0);
+	stopwatch_type type = settings_get_type(settings);
+    set_property_visibility(props, SETTING_COUNTUP_ENDVALUE, type == STOPWATCH_TYPE_COUNTUP);
+    set_property_visibility(props, SETTING_COUNTDOWN_INITIALVALUE, type == STOPWATCH_TYPE_COUNTDOWN);
 
     UNUSED_PARAMETER(property);
-
     return true;
 }
 

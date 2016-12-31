@@ -3,14 +3,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-/**
- * The stopwatch type (direction)
- */
-enum stopwatch_type {
-	STOPWATCH_TYPE_COUNTUP,
-    STOPWATCH_TYPE_COUNTDOWN
-};
-
 
 /**
  * Define stopwatch source structure.
