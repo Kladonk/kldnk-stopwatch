@@ -36,7 +36,7 @@ const char *settings_get_initial_value(obs_data_t *settings);
  * @param settings the settings
  * @return the initial value as int
  */
-uint32_t settings_get_initial_value_as_int(obs_data_t *settings);
+int64_t settings_get_initial_value_as_int(obs_data_t *settings);
 
 
 /**
@@ -56,4 +56,4 @@ const char *settings_get_end_value(obs_data_t *settings);
  * @param settings the settings
  * @return the end value as int
  */
-uint32_t settings_get_end_value_as_int(obs_data_t *settings);
+int64_t settings_get_end_value_as_int(obs_data_t *settings);

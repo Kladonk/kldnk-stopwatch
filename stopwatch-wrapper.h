@@ -25,7 +25,7 @@ void stop(stopwatch_source_t *stopwatch);
 /**
  * Updates the stopwatch with the given millis_elapsed.
  */
-void update(stopwatch_source_t *stopwatch, uint32_t millis_elapsed);
+void update(stopwatch_source_t *stopwatch, float seconds);
 
 
 /**

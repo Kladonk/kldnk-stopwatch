@@ -28,7 +28,7 @@ time_info_t *time_string_to_time(const char *time_string);
 * @param millis the milliseconds
 * @return the time_info struct
 */
-time_info_t *millis_to_time(uint32_t millis);
+time_info_t *millis_to_time(int64_t millis);
 
 
 /**
@@ -37,7 +37,7 @@ time_info_t *millis_to_time(uint32_t millis);
  * @param time_string the time string (format: hh:mm:ss)
  * @return the milliseconds representing the time string
  */
-uint32_t time_string_to_millis(const char *time_string);
+int64_t time_string_to_millis(const char *time_string);
 
 
 /**
@@ -46,7 +46,7 @@ uint32_t time_string_to_millis(const char *time_string);
 * @param ti the time_info struct
 * @return the milliseconds
 */
-uint32_t time_to_millis(time_info_t *ti);
+int64_t time_to_millis(time_info_t *ti);
 
 
 /**
@@ -55,7 +55,7 @@ uint32_t time_to_millis(time_info_t *ti);
 * @param millis the milliseconds
 * @return the string representing the milliseconds (format: hh:mm:ss);
 */
-const char *millis_to_string(uint32_t millis);
+const char *millis_to_string(int64_t millis);
 
 
 /**
