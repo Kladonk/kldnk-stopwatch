@@ -16,7 +16,8 @@ time_info_t *time_string_to_time(const char *time_string)
 	if (time_string)
 	{
 		char **tokens = strlist_split(time_string, ':', false);
-		if (tokens && tokens[0] && tokens[1] && tokens[2]) {
+		if (tokens && tokens[0] && tokens[1] && tokens[2])
+		{
 			ti->hours = atoi(tokens[0]);
 			ti->minutes = atoi(tokens[1]);
 			ti->seconds = atoi(tokens[2]);
