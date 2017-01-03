@@ -10,5 +10,7 @@ In order to compile the plugin, you will need to setup the obs-studio build envi
 5. Run **make && make package** to create the executable.
 
 ## Final notes
-* The plugin is currently tested for Mac only. I will test it on Windows in a few days.
+* The plugin has been successfully tested on Mac and Windows.
+* I'm currently rewriting things in C++, though the latest release is still in C.
+* I'm planning mechanisms to bind actions and event listeners to the stopwatch.
 * Feel free to send me feedback so I can improve the plugin.
