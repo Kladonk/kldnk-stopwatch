@@ -18,6 +18,8 @@ set(kldnk-stopwatch_SOURCES
     StopwatchBase.cpp
     Stopwatch.h
     Timer.h
+
+    ft2helper.c
     
     KldnkStopwatch.cpp
     

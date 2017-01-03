@@ -1,9 +1,9 @@
 #include "stopwatch-wrapper.h"
-#include "stopwatch-settings.h"
 #include "stopwatch-type.h"
 #include "time-util.h"
 #include <obs-module.h>
 #include <obs-internal.h>
+#include "stopwatch-settings.h"
 
 
 /**
@@ -304,8 +304,8 @@ static void update_stopwatch_text(stopwatch_source_t *stopwatch)
     }
 
     const char *time_string = millis_to_string(time);
-    obs_data_set_string(stopwatch->textSource->context.settings, "text", time_string);
-    obs_source_update(stopwatch->textSource, stopwatch->textSource->context.settings);
+    //obs_data_set_string(stopwatch->textSource->context.settings, "text", time_string);
+    //obs_source_update(stopwatch->textSource, stopwatch->textSource->context.settings);
 }
 
 

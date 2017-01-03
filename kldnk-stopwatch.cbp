@@ -114,6 +114,9 @@
 		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/events/StopwatchStopEvent.h">
 			<Option target="kldnk-stopwatch"/>
 		</Unit>
+		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/ft2helper.c">
+			<Option target="kldnk-stopwatch"/>
+		</Unit>
 		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/stopwatch-settings.c">
 			<Option target="kldnk-stopwatch"/>
 		</Unit>

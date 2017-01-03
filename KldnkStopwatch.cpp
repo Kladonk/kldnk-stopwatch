@@ -1,9 +1,11 @@
 #include "Stopwatch.h"
 #include "Timer.h"
-#include "time-util.h"
 #include <obs-module.h>
-#include <obs-internal.h>
 #include <memory>
+
+extern "C" {
+    #include "time-util.h"
+}
 
 
 /**
@@ -11,6 +13,14 @@
  */
 #define UPDATE_AFTER_SECONDS    0.015f
 
+ /**
+ * The ID of the text_ft2_source to instantiate the sub-source
+ */
+#define TEXT_SOURCE_ID      "text_ft2_source\0"
+
+/*
+ * Define texts
+ */
 #define T_(v)               obs_module_text(v)
 #define T_NAME              T_("StopwatchSource")
 #define T_TYPE              T_("Type")
@@ -23,8 +33,16 @@
 
 #define AS_STOPWATCH(v)     (reinterpret_cast<StopwatchSource*>(v))
 
+
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("kldnk-stopwatch", "en-US")
+
+
+// Need to be declared outside of this compilation unit because it needs
+// to #include <obs-internla.h> which is currently incompatible with C++.
+extern "C" {
+    void update_ft2_text(obs_source_t *textSource, const char *text);
+}
 
 
 /**
@@ -68,9 +86,26 @@ public:
 };
 
 
-StopwatchSource::StopwatchSource(obs_source_t *source_, obs_data_t *settings)
+StopwatchSource::StopwatchSource(obs_source_t *source, obs_data_t *settings)
 {
     m_update_time_elapsed = 0.0f;
+
+    m_source = source;
+    m_textSource = obs_source_create(TEXT_SOURCE_ID, TEXT_SOURCE_ID, settings, NULL);
+    /*
+    stopwatch->type = settings_get_type(settings);
+    stopwatch->initial_value = settings_get_initial_value_as_int(settings);
+    stopwatch->end_value = settings_get_end_value_as_int(settings);
+    reset(stopwatch);
+
+    obs_source_add_active_child(stopwatch->source, stopwatch->textSource);
+
+    init_stopwatch_hotkeys(stopwatch);
+
+    update_stopwatch_text(stopwatch);
+
+    return stopwatch;
+    */
 }
 
 
@@ -112,8 +147,7 @@ StopwatchType StopwatchSource::getStopwatchType()
 void StopwatchSource::updateText()
 {
     const char *time_string = millis_to_string(m_stopwatch->getCurrentValue());
-    obs_data_set_string(m_textSource->context.settings, "text", time_string);
-    obs_source_update(m_textSource, m_textSource->context.settings);
+    update_ft2_text(m_textSource, time_string);
 }
 
 
