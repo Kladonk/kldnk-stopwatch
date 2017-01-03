@@ -17,11 +17,10 @@ protected:
     StopwatchBase() { init(); };
     ~StopwatchBase() {};
 
-    void init() { setEnabled(false); setFinished(false); setElapsedMillis(0); };
+    void init();
 
     virtual bool checkIfFinished() = 0;
-    void setEnabled(bool enabled) { m_enabled = enabled; };
-    void setFinished(bool finished) { m_finished = finished; };
+    void finish();
     void setElapsedMillis(uint64_t elapsedMillis) { m_elapsedMillis = elapsedMillis; };
     void addElapsedMillis(uint64_t elapsedMillis) { m_elapsedMillis += elapsedMillis; };
 
@@ -32,7 +31,7 @@ public:
     void start() override;
     void stop() override;
     void reset() override;
-    void update(uint32_t elapsedMillis) override { if (isEnabled()) addElapsedMillis(elapsedMillis); };
+    void update(uint32_t elapsedMillis) override;
     uint64_t getCurrentValue() override { return getElapsedMillis(); };
 
     bool isEnabled() override { return m_enabled; };

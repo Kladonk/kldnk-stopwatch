@@ -3,5 +3,6 @@
 class IStopwatchAction
 {
 public:
-   virtual void execute() = 0;
+	virtual ~IStopwatchAction() {};
+	virtual void execute() = 0;
 };

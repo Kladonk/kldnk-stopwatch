@@ -12,4 +12,5 @@ public:
     uint64_t getMaxMillis() { return m_maxMillis; };
 
     bool checkIfFinished() override { return getElapsedMillis() >= getMaxMillis(); };
+    void finish() { StopwatchBase::finish(); setElapsedMillis(m_maxMillis); };
 };

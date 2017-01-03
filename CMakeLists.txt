@@ -18,8 +18,8 @@ set(kldnk-stopwatch_SOURCES
     StopwatchBase.cpp
     Stopwatch.h
     Timer.h
-
-	KldndStopwatch.cpp
+    
+    KldnkStopwatch.cpp
     
     time-util.h
     time-util.c
@@ -28,7 +28,6 @@ set(kldnk-stopwatch_SOURCES
     stopwatch-settings.c
     stopwatch-wrapper.h
     stopwatch-wrapper.c
-    kldnk-stopwatch.c
     )
 
 add_library(kldnk-stopwatch MODULE

@@ -1,6 +1,15 @@
-#include <obs-module.h>
 #include "Stopwatch.h"
 #include "Timer.h"
+#include "time-util.h"
+#include <obs-module.h>
+#include <obs-internal.h>
+#include <memory>
+
+
+/**
+ * Update the stopwatch every 15 milliseconds
+ */
+#define UPDATE_AFTER_SECONDS    0.015f
 
 #define T_(v)               obs_module_text(v)
 #define T_NAME              T_("StopwatchSource")
@@ -12,106 +21,218 @@
 #define T_HK_ENABLE         T_("Hotkey.Enable")
 #define T_HK_RESET          T_("Hotkey.Reset")
 
+#define AS_STOPWATCH(v)     (reinterpret_cast<StopwatchSource*>(v))
 
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("kldnk-stopwatch", "en-US")
 
+
+/**
+ * Enum class that defines the avaliable types of stopwatches.
+ */
+enum class StopwatchType
+{
+    Stopwatch,
+    Timer,
+    Invalid
+};
+
+
+/**
+ * The source class that brings together the stopwatch functionality with the
+ * visual parts of the source plugin (i.e. displaying the current value).
+ */
 class StopwatchSource
 {
 private:
     obs_source_t *m_source;
-    const IStopwatch& m_stopwatch;
+    obs_source_t *m_textSource;
+    std::shared_ptr<IStopwatch> m_stopwatch;
     obs_hotkey_id m_hk_enable;
     obs_hotkey_id m_hk_reset;
+    float m_update_time_elapsed;
+
+    void updateText();
+    StopwatchType getStopwatchType();
 
 public:
-    StopwatchSource(const IStopwatch& stopwatch) : m_stopwatch(stopwatch) {};
-    ~StopwatchSource() {};
+    StopwatchSource(obs_source_t *source_, obs_data_t *settings);
+    ~StopwatchSource();
+    void update(obs_data_t *settings);
+    uint32_t getWidth();
+    uint32_t getHeight();
+    void render();
+    void tick(float elapsedSeconds);
+    obs_properties_t *getProperties();
+    void enumActiveSources(obs_source_enum_proc_t enum_callback, void *param);
 };
 
 
-static const char *stopwatch_source_get_name(void *type_data)
+StopwatchSource::StopwatchSource(obs_source_t *source_, obs_data_t *settings)
 {
-    return T_NAME;
+    m_update_time_elapsed = 0.0f;
 }
 
 
-static void *stopwatch_source_create(obs_data_t *settings, obs_source_t *source)
+StopwatchSource::~StopwatchSource()
 {
-    const IStopwatch& stopwatch = Stopwatch(0);
-    return (void*)new StopwatchSource(stopwatch);
+    // Unregister hotkeys
+    obs_hotkey_unregister(m_hk_enable);
+    obs_hotkey_unregister(m_hk_reset);
+
+    // Release textSource
+    obs_source_remove(m_textSource);
+    obs_source_release(m_textSource);
+    m_textSource = NULL;
+
+    // TODO Check if obs_source_release also frees the memory e.g. bfree(m_textSource)
 }
 
 
-static void stopwatch_source_destroy(void *data)
+StopwatchType StopwatchSource::getStopwatchType()
 {
-    delete reinterpret_cast<StopwatchSource*>(data);
+    IStopwatch *stopwatch = m_stopwatch.get();
+
+    stopwatch = dynamic_cast<Stopwatch*>(stopwatch);
+    if (stopwatch != nullptr)
+    {
+        return StopwatchType::Stopwatch;
+    }
+
+    stopwatch = dynamic_cast<Timer*>(stopwatch);
+    if (stopwatch != nullptr)
+    {
+        return StopwatchType::Timer;
+    }
+
+    return StopwatchType::Invalid;
 }
 
 
-static void stopwatch_source_update(void *data, obs_data_t *settings)
+void StopwatchSource::updateText()
 {
+    const char *time_string = millis_to_string(m_stopwatch->getCurrentValue());
+    obs_data_set_string(m_textSource->context.settings, "text", time_string);
+    obs_source_update(m_textSource, m_textSource->context.settings);
 }
 
 
-static uint32_t stopwatch_source_getwidth(void *data)
+void StopwatchSource::update(obs_data_t *settings)
 {
+    // TODO
 }
 
 
-static uint32_t stopwatch_source_getheight(void *data)
+uint32_t StopwatchSource::getWidth()
 {
+    return obs_source_get_width(m_textSource);
 }
 
 
-static void stopwatch_source_render(void *data, gs_effect_t *effect)
+uint32_t StopwatchSource::getHeight()
 {
+    return obs_source_get_height(m_textSource);
 }
 
 
-static void stopwatch_source_tick(void *data, float seconds)
+void StopwatchSource::render()
 {
+    // TODO
 }
 
 
-static void stopwatch_source_defaults(obs_data_t *settings)
+void StopwatchSource::tick(float elapsedSeconds)
 {
+    m_stopwatch.get()->update(elapsedSeconds * 1000);
+
+    m_update_time_elapsed += elapsedSeconds;
+
+    if (m_update_time_elapsed >= UPDATE_AFTER_SECONDS)
+    {
+        m_update_time_elapsed = 0;
+        updateText();
+    }
 }
 
 
-static obs_properties_t *stopwatch_source_properties(void *data)
+obs_properties_t *StopwatchSource::getProperties()
 {
+    // TODO
+    return NULL;
 }
 
 
-void enum_active_sources(void *data, obs_source_enum_proc_t enum_callback, void *param)
+void StopwatchSource::enumActiveSources(obs_source_enum_proc_t enum_callback, void *param)
 {
+    enum_callback(m_source, m_textSource, param);
 }
 
 
+/**
+ * The plugin starting function. Called when the plugin is loaded.
+ *
+ * @return true
+ */
 bool obs_module_load(void)
 {
     struct obs_source_info si = {};
     si.id = "kldnk_stopwatch_source";
     si.type = OBS_SOURCE_TYPE_INPUT;
     si.output_flags = OBS_SOURCE_VIDEO;
-    si.get_name = stopwatch_source_get_name;
-    si.create = stopwatch_source_create;
-    si.destroy = stopwatch_source_destroy;
-    si.update = stopwatch_source_update;
-    si.get_width = stopwatch_source_getwidth;
-    si.get_height = stopwatch_source_getheight;
-    si.video_render = stopwatch_source_render;
-    si.video_tick = stopwatch_source_tick;
-    si.get_defaults = stopwatch_source_defaults;
-    si.get_properties = stopwatch_source_properties;
-    si.enum_active_sources = enum_active_sources;
+    si.get_name = [] (void *type_data)
+    {
+        return obs_module_text("StopwatchSource");
+    };
+    si.create = [] (obs_data_t *settings, obs_source_t *source)
+    {
+        return (void*)new StopwatchSource(source, settings);
+    };
+    si.destroy = [] (void *data)
+    {
+        delete AS_STOPWATCH(data);
+    };
+    si.update = [] (void *data, obs_data_t *settings)
+    {
+        AS_STOPWATCH(data)->update(settings);
+    };
+    si.get_width = [] (void *data)
+    {
+        return AS_STOPWATCH(data)->getWidth();
+    };
+    si.get_height = [] (void *data)
+    {
+        return AS_STOPWATCH(data)->getHeight();
+    };
+    si.video_render = [] (void *data, gs_effect_t *effect)
+    {
+        AS_STOPWATCH(data)->render();
+    };
+    si.video_tick = [] (void *data, float seconds)
+    {
+        AS_STOPWATCH(data)->tick(seconds);
+    };
+    si.get_defaults = [] (obs_data_t *settings)
+    {
+        // TODO
+    };
+    si.get_properties = [] (void *data)
+    {
+        return AS_STOPWATCH(data)->getProperties();
+    };
+    si.enum_active_sources = [] (void *data, obs_source_enum_proc_t enum_callback, void *param)
+    {
+        return AS_STOPWATCH(data)->enumActiveSources(enum_callback, param);
+    };
 
     obs_register_source(&si);
     return true;
 }
 
 
+/**
+ * The plugin end function. Called when the plugin is unloaded.
+ */
 void obs_module_unload(void)
 {
+    // TODO
 }
