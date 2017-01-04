@@ -10,7 +10,7 @@
 /**
  * Update the stopwatch every 15 milliseconds
  */
-#define UPDATE_AFTER_SECONDS        1.0f//0.015f
+#define UPDATE_AFTER_SECONDS        0.015f
 
  /**
  * The ID of the text_ft2_source to instantiate the sub-source
