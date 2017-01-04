@@ -89,24 +89,8 @@ public:
     obs_properties_t *getProperties();
     void enumActiveSources(obs_source_enum_proc_t enum_callback, void *param);
 
-    void toggle() {
-        IStopwatch *s = getStopwatch();
-        if (s->isEnabled())
-        {
-            s->stop();
-        }
-        else if (!s->isFinished())
-        {
-            s->start();
-        }
-    };
-    void reset() {
-        IStopwatch *s = getStopwatch();
-        if (!s->isEnabled() || s->isFinished())
-        {
-            s->reset();
-        }
-    };
+    void toggle();
+    void reset();
 };
 
 
@@ -247,7 +231,7 @@ void StopwatchSource::render()
 
 void StopwatchSource::tick(float elapsedSeconds)
 {
-    m_stopwatch.get()->update(elapsedSeconds * 1000);
+    getStopwatch()->update(elapsedSeconds * 1000);
 
     m_updateTimeElapsed += elapsedSeconds;
 
@@ -315,6 +299,30 @@ bool stopwatch_type_changed(obs_properties_t *props, obs_property_t *property, o
 void StopwatchSource::enumActiveSources(obs_source_enum_proc_t enum_callback, void *param)
 {
     enum_callback(m_source, m_textSource, param);
+}
+
+
+void StopwatchSource::toggle()
+{
+    IStopwatch *s = getStopwatch();
+    if (s->isEnabled())
+    {
+        s->stop();
+    }
+    else if (!s->isFinished())
+    {
+        s->start();
+    }
+}
+
+
+void StopwatchSource::reset()
+{
+    IStopwatch *s = getStopwatch();
+    if (!s->isEnabled() || s->isFinished())
+    {
+        s->reset();
+    }
 }
 
 
