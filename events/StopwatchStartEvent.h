@@ -8,5 +8,5 @@ public:
     StopwatchStartEvent(IStopwatch& stopwatch) : StopwatchEventBase(stopwatch) {};
     ~StopwatchStartEvent() {};
 
-    std::string getName() override { return "StopwatchStartEvent";  };
+    const char *getName() override { return "StopwatchStartEvent";  };
 };

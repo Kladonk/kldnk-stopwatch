@@ -2,11 +2,13 @@ project(kldnk-stopwatch)
 
 set(kldnk-stopwatch_SOURCES
     events/IStopwatchEventListener.h
+    events/LoggingEventListener.h
     events/IStopwatchEvent.h
     events/StopwatchEventBase.h
     events/StopwatchStartEvent.h
     events/StopwatchStopEvent.h
     events/StopwatchResetEvent.h
+    events/StopwatchFinishEvent.h
 
     actions/IStopwatchAction.h
     actions/StopwatchActionBase.h

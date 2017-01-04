@@ -2,6 +2,7 @@
 #include "events/StopwatchStartEvent.h"
 #include "events/StopwatchStopEvent.h"
 #include "events/StopwatchResetEvent.h"
+#include "events/StopwatchFinishEvent.h"
 
 
 void StopwatchBase::init()
@@ -15,21 +16,21 @@ void StopwatchBase::init()
 void StopwatchBase::start()
 {
     m_enabled = true;
-    fireEvent(StopwatchStartEvent(*this));
+    fireEvent(new StopwatchStartEvent(*this));
 }
 
 
 void StopwatchBase::stop()
 {
     m_enabled = false;
-    fireEvent(StopwatchStopEvent(*this));
+    fireEvent(new StopwatchStopEvent(*this));
 }
 
 
 void StopwatchBase::reset()
 {
     init();
-    fireEvent(StopwatchResetEvent(*this));
+    fireEvent(new StopwatchResetEvent(*this));
 }
 
 
@@ -51,4 +52,5 @@ void StopwatchBase::finish()
 {
 	m_enabled = false;
 	m_finished = true;
+	fireEvent(new StopwatchFinishEvent(*this));
 }

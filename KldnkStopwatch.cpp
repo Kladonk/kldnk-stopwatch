@@ -2,6 +2,7 @@
 #include "Timer.h"
 #include "StopwatchSettings.h"
 #include "TimeUtil.h"
+#include "events/LoggingEventListener.h"
 #include <obs-module.h>
 #include <memory>
 
@@ -71,11 +72,10 @@ private:
     obs_hotkey_id m_hkReset;
     float m_updateTimeElapsed;
 
-    IStopwatch *initStopwatch(obs_data_t *settings);
+    void initStopwatch(obs_data_t *settings);
+    void initHotkeys();
     void updateText();
     StopwatchType getStopwatchType();
-
-    void setStopwatch(IStopwatch *stopwatch) { m_stopwatch = std::shared_ptr<IStopwatch>(stopwatch); };
     IStopwatch *getStopwatch() { return m_stopwatch.get(); };
 
 public:
@@ -89,7 +89,17 @@ public:
     obs_properties_t *getProperties();
     void enumActiveSources(obs_source_enum_proc_t enum_callback, void *param);
 
-    void toggle() { IStopwatch *s = getStopwatch(); s->isEnabled() ? s->stop() : s->start(); };
+    void toggle() {
+        IStopwatch *s = getStopwatch();
+        if (s->isEnabled())
+        {
+            s->stop();
+        }
+        else if (!s->isFinished())
+        {
+            s->start();
+        }
+    };
     void reset() { IStopwatch *s = getStopwatch(); if (!s->isEnabled() || s->isFinished()) s->reset(); };
 };
 
@@ -104,36 +114,39 @@ StopwatchSource::StopwatchSource(obs_source_t *source, obs_data_t *settings)
     obs_source_add_active_child(m_source, m_textSource);
 
     initStopwatch(settings);
+    initHotkeys();
 
-    m_hkEnable = obs_hotkey_register_source(source,
-            HOTKEY_STOPWATCH_TOGGLE, T_HK_ENABLE,
-            stopwatch_enable_hotkey_pressed, this);
-
-    m_hkReset = obs_hotkey_register_source(source,
-            HOTKEY_STOPWATCH_RESET, T_HK_RESET,
-            stopwatch_reset_hotkey_pressed, this);
+    getStopwatch()->addEventListener(new LoggingEventListener());
 
     updateText();
 }
 
 
-IStopwatch *StopwatchSource::initStopwatch(obs_data_t *settings)
+void StopwatchSource::initStopwatch(obs_data_t *settings)
 {
     StopwatchType type = settings_get_type(settings);
-    IStopwatch *stopwatch = nullptr;
     if (type == StopwatchType::Timer)
     {
         uint64_t initialValue = settings_get_initial_value_as_int(settings);
-        stopwatch = new Timer(initialValue);
+        m_stopwatch = std::make_shared<Timer>(initialValue); 
     }
     else
     {
         uint64_t maxValue = settings_get_end_value_as_int(settings);
-        stopwatch = new Stopwatch(maxValue);
+        m_stopwatch = std::make_shared<Stopwatch>(maxValue); 
     }
-    setStopwatch(stopwatch);
+}
 
-    return stopwatch;
+
+void StopwatchSource::initHotkeys()
+{
+    m_hkEnable = obs_hotkey_register_source(m_source,
+            HOTKEY_STOPWATCH_TOGGLE, T_HK_ENABLE,
+            stopwatch_enable_hotkey_pressed, this);
+
+    m_hkReset = obs_hotkey_register_source(m_source,
+            HOTKEY_STOPWATCH_RESET, T_HK_RESET,
+            stopwatch_reset_hotkey_pressed, this);
 }
 
 

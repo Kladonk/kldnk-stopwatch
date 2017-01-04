@@ -17,9 +17,6 @@ public:
     virtual bool isFinished() = 0;
     virtual uint64_t getElapsedMillis() = 0;
 
-    virtual void addEventListener(IStopwatchEventListener& eventListener) = 0;
-    virtual void removeEventListener(IStopwatchEventListener& eventListener) = 0;
-
-    virtual void addAction(IStopwatchAction& action) = 0;
-    virtual void removeAction(IStopwatchAction& action) = 0;
+    virtual void addEventListener(IStopwatchEventListener *eventListener) = 0;
+    virtual void addAction(IStopwatchAction *action) = 0;
 };

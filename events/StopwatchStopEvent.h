@@ -6,5 +6,5 @@ public:
     StopwatchStopEvent(IStopwatch& stopwatch) : StopwatchEventBase(stopwatch) {};
     ~StopwatchStopEvent() {};
 
-    std::string getName() override { return "StopwatchStopEvent"; };
+    const char *getName() override { return "StopwatchStopEvent"; };
 };
