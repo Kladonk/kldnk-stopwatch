@@ -1,3 +1,5 @@
+#pragma once
+
 #include "StopwatchType.h"
 #include "TimeUtil.h"
 #include <obs-data.h>
@@ -50,8 +52,8 @@ const char *settings_get_initial_value(obs_data_t *settings)
  */
 int64_t settings_get_initial_value_as_int(obs_data_t *settings)
 {
-    const char *time_string = settings_get_initial_value(settings);
-    return time_string_to_millis(time_string);
+    const char *timeString = settings_get_initial_value(settings);
+    return time_string_to_millis(std::string(timeString));
 }
 
 
@@ -77,6 +79,6 @@ const char *settings_get_end_value(obs_data_t *settings)
  */
 int64_t settings_get_end_value_as_int(obs_data_t *settings)
 {
-    const char *time_string = settings_get_end_value(settings);
-    return time_string_to_millis(time_string);
+    const char *timeString = settings_get_end_value(settings);
+    return time_string_to_millis(std::string(timeString));
 }

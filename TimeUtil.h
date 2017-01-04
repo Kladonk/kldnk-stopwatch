@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 
 /**
  * Time structure for storing hours, minutes, seconds and millis.
@@ -16,9 +17,9 @@ typedef struct time_info {
 * Parses a time string an returns the representing time_info struct.
 *
 * @param time_string the time string (format: hh:mm:ss)
-* @return the time_info struct representing the time string
+* @return the timeString struct representing the time string
 */
-time_info_t *time_string_to_time(const char *time_string);
+time_info_t time_string_to_time(std::string timeString);
 
 
 /**
@@ -27,16 +28,16 @@ time_info_t *time_string_to_time(const char *time_string);
 * @param millis the milliseconds
 * @return the time_info struct
 */
-time_info_t *millis_to_time(int64_t millis);
+time_info_t millis_to_time(int64_t millis);
 
 
 /**
  * Parses a time string an returns the representing millis.
  *
- * @param time_string the time string (format: hh:mm:ss)
+ * @param timeString the time string (format: hh:mm:ss)
  * @return the milliseconds representing the time string
  */
-int64_t time_string_to_millis(const char *time_string);
+int64_t time_string_to_millis(std::string timeString);
 
 
 /**
@@ -45,7 +46,7 @@ int64_t time_string_to_millis(const char *time_string);
 * @param ti the time_info struct
 * @return the milliseconds
 */
-int64_t time_to_millis(time_info_t *ti);
+int64_t time_to_millis(time_info_t ti);
 
 
 /**
@@ -54,7 +55,7 @@ int64_t time_to_millis(time_info_t *ti);
 * @param millis the milliseconds
 * @return the string representing the milliseconds (format: hh:mm:ss);
 */
-const char *millis_to_string(int64_t millis);
+std::string millis_to_string(int64_t millis);
 
 
 /**
@@ -63,4 +64,4 @@ const char *millis_to_string(int64_t millis);
  * @param ti the time_info struct
  * @return the string representing the time_info struct (format: hh:mm:ss)
  */
-const char *time_to_string(time_info_t *ti);
+std::string time_to_string(time_info_t ti);

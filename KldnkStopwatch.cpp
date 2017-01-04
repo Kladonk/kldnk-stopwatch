@@ -10,7 +10,7 @@
 /**
  * Update the stopwatch every 15 milliseconds
  */
-#define UPDATE_AFTER_SECONDS        0.015f
+#define UPDATE_AFTER_SECONDS        1.0f//0.015f
 
  /**
  * The ID of the text_ft2_source to instantiate the sub-source
@@ -100,7 +100,13 @@ public:
             s->start();
         }
     };
-    void reset() { IStopwatch *s = getStopwatch(); if (!s->isEnabled() || s->isFinished()) s->reset(); };
+    void reset() {
+        IStopwatch *s = getStopwatch();
+        if (!s->isEnabled() || s->isFinished())
+        {
+            s->reset();
+        }
+    };
 };
 
 
@@ -191,9 +197,6 @@ StopwatchSource::~StopwatchSource()
     // Release textSource
     obs_source_remove(m_textSource);
     obs_source_release(m_textSource);
-    m_textSource = NULL;
-
-    // TODO Check if obs_source_release also frees the memory e.g. bfree(m_textSource)
 }
 
 
@@ -212,8 +215,8 @@ StopwatchType StopwatchSource::getStopwatchType()
 
 void StopwatchSource::updateText()
 {
-    const char *time_string = millis_to_string(m_stopwatch->getCurrentValue());
-    update_ft2_text(m_textSource, time_string);
+    std::string timeString = millis_to_string(m_stopwatch->getCurrentValue());
+    update_ft2_text(m_textSource, timeString.c_str());
 }
 
 

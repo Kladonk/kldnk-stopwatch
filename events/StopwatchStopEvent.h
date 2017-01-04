@@ -1,3 +1,5 @@
+#pragma once
+
 #include "StopwatchEventBase.h"
 
 class StopwatchStopEvent : public StopwatchEventBase
