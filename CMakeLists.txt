@@ -19,17 +19,13 @@ set(kldnk-stopwatch_SOURCES
     Stopwatch.h
     Timer.h
 
+    StopwatchType.h
+    StopwatchSettings.h
+    TimeUtil.h
+    TimeUtil.cpp
     ft2helper.c
-    
+
     KldnkStopwatch.cpp
-    
-    time-util.h
-    time-util.c
-    stopwatch-type.h
-    stopwatch-settings.h
-    stopwatch-settings.c
-    stopwatch-wrapper.h
-    stopwatch-wrapper.c
     )
 
 add_library(kldnk-stopwatch MODULE

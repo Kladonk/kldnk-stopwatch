@@ -3,7 +3,7 @@
 #include "time-util.h"
 #include <obs-module.h>
 #include <obs-internal.h>
-#include "stopwatch-settings.h"
+#include "StopwatchSettings.h"
 
 
 /**

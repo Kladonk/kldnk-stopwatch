@@ -81,6 +81,18 @@
 		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/StopwatchBase.h">
 			<Option target="kldnk-stopwatch"/>
 		</Unit>
+		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/StopwatchSettings.h">
+			<Option target="kldnk-stopwatch"/>
+		</Unit>
+		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/StopwatchType.h">
+			<Option target="kldnk-stopwatch"/>
+		</Unit>
+		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/TimeUtil.cpp">
+			<Option target="kldnk-stopwatch"/>
+		</Unit>
+		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/TimeUtil.h">
+			<Option target="kldnk-stopwatch"/>
+		</Unit>
 		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/Timer.h">
 			<Option target="kldnk-stopwatch"/>
 		</Unit>
@@ -115,27 +127,6 @@
 			<Option target="kldnk-stopwatch"/>
 		</Unit>
 		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/ft2helper.c">
-			<Option target="kldnk-stopwatch"/>
-		</Unit>
-		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/stopwatch-settings.c">
-			<Option target="kldnk-stopwatch"/>
-		</Unit>
-		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/stopwatch-settings.h">
-			<Option target="kldnk-stopwatch"/>
-		</Unit>
-		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/stopwatch-type.h">
-			<Option target="kldnk-stopwatch"/>
-		</Unit>
-		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/stopwatch-wrapper.c">
-			<Option target="kldnk-stopwatch"/>
-		</Unit>
-		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/stopwatch-wrapper.h">
-			<Option target="kldnk-stopwatch"/>
-		</Unit>
-		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/time-util.c">
-			<Option target="kldnk-stopwatch"/>
-		</Unit>
-		<Unit filename="/Users/janheld/Workspaces/obs-studio/plugins/kldnk-stopwatch/time-util.h">
 			<Option target="kldnk-stopwatch"/>
 		</Unit>
 		<Unit filename="/Users/janheld/Workspaces/obs-studio/CMakeLists.txt">

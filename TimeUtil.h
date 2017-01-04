@@ -12,7 +12,6 @@ typedef struct time_info {
     uint32_t millis;
 } time_info_t;
 
-
 /**
 * Parses a time string an returns the representing time_info struct.
 *

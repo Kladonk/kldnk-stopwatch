@@ -1,5 +1,6 @@
-#include "time-util.h"
+#include "TimeUtil.h"
 #include "util/bmem.h"
+#include <stdint.h>
 #include <util/dstr.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,7 +8,7 @@
 
 time_info_t *time_string_to_time(const char *time_string)
 {
-    time_info_t *ti = bzalloc(sizeof(time_info_t));
+    time_info_t *ti = new time_info_t();
     ti->hours = 0;
     ti->minutes = 0;
     ti->seconds = 0;
@@ -31,7 +32,7 @@ time_info_t *time_string_to_time(const char *time_string)
 
 time_info_t *millis_to_time(int64_t millis)
 {
-    time_info_t *ti = bzalloc(sizeof(time_info_t));
+    time_info_t *ti = new time_info_t();
     ti->millis = millis % 1000;
     millis /= 1000;
     ti->seconds = millis % 60;
@@ -47,7 +48,7 @@ int64_t time_string_to_millis(const char *time_string)
 {
     time_info_t *ti = time_string_to_time(time_string);
     int64_t millis = time_to_millis(ti);
-    bfree(ti);
+    delete ti;
     return millis;
 }
 
@@ -65,7 +66,7 @@ const char *millis_to_string(int64_t millis)
 {
     time_info_t *ti = millis_to_time(millis);
     const char *text = time_to_string(ti);
-    bfree(ti);
+    delete ti;
     return text;
 }
 
