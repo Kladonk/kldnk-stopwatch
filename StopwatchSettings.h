@@ -20,15 +20,11 @@
 StopwatchType settings_get_type(obs_data_t *settings)
 {
     const char *type = obs_data_get_string(settings, S_TYPE);
-    if (strcmp(type, S_TYPE_STOPWATCH) == 0)
-    {
-        return StopwatchType::Stopwatch;
-    }
-    else if (strcmp(type, S_TYPE_TIMER) == 0)
+    if (strcmp(type, S_TYPE_TIMER) == 0)
     {
         return StopwatchType::Timer;
     }
-    return StopwatchType::Invalid;
+    return StopwatchType::Stopwatch;
 }
 
 

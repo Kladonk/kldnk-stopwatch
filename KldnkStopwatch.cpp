@@ -94,26 +94,6 @@ public:
 };
 
 
-IStopwatch *StopwatchSource::initStopwatch(obs_data_t *settings)
-{
-    StopwatchType type = settings_get_type(settings);
-    IStopwatch *stopwatch = nullptr;
-    if (type == StopwatchType::Stopwatch)
-    {
-        uint64_t maxValue = settings_get_end_value_as_int(settings);
-        stopwatch = new Stopwatch(maxValue);
-    }
-    else if (type == StopwatchType::Timer)
-    {
-        uint64_t initialValue = settings_get_initial_value_as_int(settings);
-        stopwatch = new Timer(initialValue);
-    }
-    setStopwatch(stopwatch);
-
-    return stopwatch;
-}
-
-
 StopwatchSource::StopwatchSource(obs_source_t *source, obs_data_t *settings)
 {
     m_updateTimeElapsed = 0.0f;
@@ -123,17 +103,37 @@ StopwatchSource::StopwatchSource(obs_source_t *source, obs_data_t *settings)
     m_textSource = obs_source_create(TEXT_STOPWATCH_SOURCE_ID, TEXT_STOPWATCH_SOURCE_ID, settings, NULL);
     obs_source_add_active_child(m_source, m_textSource);
 
-    IStopwatch *stopwatch = initStopwatch(settings);
+    initStopwatch(settings);
 
     m_hkEnable = obs_hotkey_register_source(source,
             HOTKEY_STOPWATCH_TOGGLE, T_HK_ENABLE,
-            stopwatch_enable_hotkey_pressed, stopwatch);
+            stopwatch_enable_hotkey_pressed, this);
 
     m_hkReset = obs_hotkey_register_source(source,
             HOTKEY_STOPWATCH_RESET, T_HK_RESET,
-            stopwatch_reset_hotkey_pressed, stopwatch);
+            stopwatch_reset_hotkey_pressed, this);
 
     updateText();
+}
+
+
+IStopwatch *StopwatchSource::initStopwatch(obs_data_t *settings)
+{
+    StopwatchType type = settings_get_type(settings);
+    IStopwatch *stopwatch = nullptr;
+    if (type == StopwatchType::Timer)
+    {
+        uint64_t initialValue = settings_get_initial_value_as_int(settings);
+        stopwatch = new Timer(initialValue);
+    }
+    else
+    {
+        uint64_t maxValue = settings_get_end_value_as_int(settings);
+        stopwatch = new Stopwatch(maxValue);
+    }
+    setStopwatch(stopwatch);
+
+    return stopwatch;
 }
 
 
@@ -188,19 +188,12 @@ StopwatchType StopwatchSource::getStopwatchType()
 {
     IStopwatch *stopwatch = m_stopwatch.get();
 
-    stopwatch = dynamic_cast<Stopwatch*>(stopwatch);
-    if (stopwatch != nullptr)
-    {
-        return StopwatchType::Stopwatch;
-    }
-
     stopwatch = dynamic_cast<Timer*>(stopwatch);
     if (stopwatch != nullptr)
     {
         return StopwatchType::Timer;
     }
-
-    return StopwatchType::Invalid;
+    return StopwatchType::Stopwatch;
 }
 
 
@@ -378,5 +371,5 @@ bool obs_module_load(void)
  */
 void obs_module_unload(void)
 {
-    // TODO
+    // Nothing to do so far
 }

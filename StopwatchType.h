@@ -6,6 +6,5 @@
 enum class StopwatchType
 {
     Stopwatch,
-    Timer,
-    Invalid
+    Timer
 };
