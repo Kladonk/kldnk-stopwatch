@@ -3,7 +3,7 @@
 #include "IStopwatchAction.h"
 #include "../IStopwatch.h"
 
-class StopwatchActionBase : IStopwatchAction
+class StopwatchActionBase : public IStopwatchAction
 {
 private:
     IStopwatch& m_stopwatch;

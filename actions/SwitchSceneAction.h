@@ -5,7 +5,7 @@
 class SwitchSceneAction : public StopwatchActionBase
 {
 public:
-    SwitchSceneAction(IStopwatch &stopwatch) : StopwatchActionBase(stopwatch) {};
+    SwitchSceneAction(IStopwatch& stopwatch) : StopwatchActionBase(stopwatch) {};
     ~SwitchSceneAction() {};
 
     void execute() override;

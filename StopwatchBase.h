@@ -29,7 +29,14 @@ protected:
     void addElapsedMillis(uint64_t elapsedMillis) { m_elapsedMillis += elapsedMillis; };
 
     void fireEvent(IStopwatchEvent *event) { for (std::shared_ptr<IStopwatchEventListener> listener : m_eventListeners) { listener.get()->handle(event); }; delete event; };
-    void executeActions() { for (std::shared_ptr<IStopwatchAction> action : m_actions) { action.get()->execute(); }; };
+    void executeActions()
+    {
+        for (std::shared_ptr<IStopwatchAction> action : m_actions)
+        {
+            IStopwatchAction *theAction = action.get();
+            theAction->execute();
+        }; 
+    };
 
 public:
     void start() override;

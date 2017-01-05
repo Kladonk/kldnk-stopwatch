@@ -3,6 +3,7 @@
 #include "StopwatchSettings.h"
 #include "TimeUtil.h"
 #include "events/LoggingEventListener.h"
+//#include "actions/SwitchSceneAction.h"
 #include <obs-module.h>
 #include <memory>
 
@@ -106,6 +107,7 @@ StopwatchSource::StopwatchSource(obs_source_t *source, obs_data_t *settings)
     initStopwatch(settings);
     initHotkeys();
 
+    //getStopwatch()->addAction(new SwitchSceneAction(*getStopwatch()));
     getStopwatch()->addEventListener(new LoggingEventListener());
 
     updateText();
@@ -181,6 +183,7 @@ StopwatchSource::~StopwatchSource()
     // Release textSource
     obs_source_remove(m_textSource);
     obs_source_release(m_textSource);
+    m_textSource = NULL;
 }
 
 

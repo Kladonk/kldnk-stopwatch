@@ -53,4 +53,5 @@ void StopwatchBase::finish()
 	m_enabled = false;
 	m_finished = true;
 	fireEvent(new StopwatchFinishEvent(*this));
+    executeActions();
 }

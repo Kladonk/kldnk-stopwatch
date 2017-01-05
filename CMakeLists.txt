@@ -34,6 +34,6 @@ add_library(kldnk-stopwatch MODULE
     ${kldnk-stopwatch_SOURCES})
 
 target_link_libraries(kldnk-stopwatch
-    libobs)
+    libobs obs-frontend-api)
 
 install_obs_plugin_with_data(kldnk-stopwatch data)
