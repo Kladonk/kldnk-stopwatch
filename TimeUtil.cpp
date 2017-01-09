@@ -19,6 +19,7 @@
 #include "TimeUtil.h"
 #include <stdint.h>
 #include <util/dstr.h>
+#include <stdlib.h>
 
 
 time_info_t time_string_to_time(std::string timeString)
