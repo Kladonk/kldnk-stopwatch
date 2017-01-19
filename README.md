@@ -11,7 +11,8 @@ In order to compile the plugin, you will need to setup the obs-studio build envi
 
 ## Final notes
 * The plugin has been successfully tested on Mac and Windows
-* Since verion 0.3.0 the plugin is most completely written in C++.
+* Since verion 0.3.0 the plugin is almost completely written in C++.
 * I added an event mechanism for the timer events suchs as start, stop, finish. Currently only used to log these states.
-* I added the functionality to bind actions to the stopwatch. The action will be fired, e.g. when the timer has finished or the stopwatch has reached its final value. A scene switcher action is prepared but without function at the moment.
+* I added the functionality to bind actions to the stopwatch. The action will be fired, e.g. when the timer has finished or the stopwatch has reached its final value.
+* A scene switch action has been added as of version 0.4.0.
 * Feel free to send me feedback so I can improve the plugin.
