@@ -22,21 +22,15 @@
 
 void SwitchSceneAction::execute()
 {
-    struct obs_frontend_source_list sources = {};
-    obs_frontend_get_scenes(&sources);
-
-    obs_source_t *source = NULL;
-    size_t i = 0;
-
-    while (!source && i++ < sources.sources.num)
+    if (m_targetScene.empty())
     {
-        obs_source_t *scene = sources.sources.array[i];
-        if (m_targetScene == scene.name)
-        {
-            m_targetScene = scene;
-        }
+        return;
     }
-    obs_frontend_set_current_source(source);
 
-    obs_frontend_source_list_free(&sources);
+    obs_source_t *scene = obs_get_source_by_name(m_targetScene.c_str());
+    if (scene)
+    {
+        obs_frontend_set_current_scene(scene);
+        obs_source_release(scene);
+    }
 }

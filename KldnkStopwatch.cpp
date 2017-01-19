@@ -23,6 +23,7 @@
 #include "events/LoggingEventListener.h"
 #include "actions/SwitchSceneAction.h"
 #include <obs-module.h>
+#include <../UI/obs-frontend-api/obs-frontend-api.h>
 #include <memory>
 
 
@@ -145,15 +146,17 @@ void StopwatchSource::initStopwatch(obs_data_t *settings)
         m_stopwatch = std::make_shared<Stopwatch>(maxValue); 
     }
 
+    IStopwatch *stopwatch = getStopwatch();
+
     // Init scene switch action
     std::string targetScene = settings_get_target_scene(settings);
-    if (!targetScene.empty)
+    if (!targetScene.empty())
     {
-        getStopwatch()->addAction(new SwitchSceneAction(*getStopwatch()));
+        stopwatch->addAction(new SwitchSceneAction(*stopwatch, ""));
     }
 
     // Init logging event listener
-    getStopwatch()->addEventListener(new LoggingEventListener());
+    stopwatch->addEventListener(new LoggingEventListener());
 }
 
 
@@ -306,11 +309,11 @@ obs_properties_t *StopwatchSource::getProperties()
 
     prop = obs_properties_add_list(props, S_TARGETSCENE, T_TARGETSCENE, OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_STRING);
     obs_property_list_add_string(prop, "", NULL);
-    BPtr<char *> scenes = obs_frontend_get_scene_names();
-    char *scene = &scenes;
-    for (scene : scenes)
-    {
-        obs_property_list_add_string(prop, scene.name, scene.name);
+    char **temp = obs_frontend_get_scene_names();
+    while (*temp) {
+        const char *name = *temp;
+        obs_property_list_add_string(prop, name, name);
+        temp++;
     }
 
     return props;

@@ -20,18 +20,15 @@
 
 #include "IStopwatchAction.h"
 #include "../IStopwatch.h"
-#include <string>
 
 class StopwatchActionBase : public IStopwatchAction
 {
 private:
     IStopwatch& m_stopwatch;
-    std::string m_targetScene;
 
 protected:
-    StopwatchActionBase(IStopwatch& stopwatch, std::string targetScene) : m_stopwatch(stopwatch), m_targetScene(targetScene) {};
+    StopwatchActionBase(IStopwatch& stopwatch) : m_stopwatch(stopwatch) {};
     ~StopwatchActionBase() {};
 
     IStopwatch& getStopwatch() { return m_stopwatch; };
-    std::string getTargetSceneName() { return m_targetScene; };
 };

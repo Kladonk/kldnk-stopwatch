@@ -19,12 +19,18 @@
 #pragma once
 
 #include "StopwatchActionBase.h"
+#include <string>
 
 class SwitchSceneAction : public StopwatchActionBase
 {
+private:
+    std::string m_targetScene;
+
 public:
-    SwitchSceneAction(IStopwatch& stopwatch) : StopwatchActionBase(stopwatch) {};
+    SwitchSceneAction(IStopwatch& stopwatch, std::string targetScene) : StopwatchActionBase(stopwatch), m_targetScene(targetScene) {};
     ~SwitchSceneAction() {};
+
+    std::string getTargetSceneName() { return m_targetScene; };
 
     void execute() override;
 };
