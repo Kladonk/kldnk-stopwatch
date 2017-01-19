@@ -152,7 +152,7 @@ void StopwatchSource::initStopwatch(obs_data_t *settings)
     std::string targetScene = settings_get_target_scene(settings);
     if (!targetScene.empty())
     {
-        stopwatch->addAction(new SwitchSceneAction(*stopwatch, ""));
+        stopwatch->addAction(new SwitchSceneAction(*stopwatch, targetScene));
     }
 
     // Init logging event listener
