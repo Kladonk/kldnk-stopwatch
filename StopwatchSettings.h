@@ -29,6 +29,7 @@
 #define S_TYPE_TIMER        "type_timer"
 #define S_ENDVALUE          "endvalue"
 #define S_INITIALVALUE      "initialvalue"
+#define S_TARGETSCENE       "targetscene"
 
 
 /**
@@ -99,4 +100,17 @@ int64_t settings_get_end_value_as_int(obs_data_t *settings)
 {
     const char *timeString = settings_get_end_value(settings);
     return time_string_to_millis(std::string(timeString));
+}
+
+
+/**
+ * Returns the target scene to switch to after the timer has
+ * finished.
+ *
+ * @param settings the settings
+ * @return the target scene
+ */
+const char *settings_get_target_scene(obs_data_t *settings)
+{
+    return obs_data_get_string(settings, S_TARGETSCENE);
 }

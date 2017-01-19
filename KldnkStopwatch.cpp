@@ -21,7 +21,7 @@
 #include "StopwatchSettings.h"
 #include "TimeUtil.h"
 #include "events/LoggingEventListener.h"
-//#include "actions/SwitchSceneAction.h"
+#include "actions/SwitchSceneAction.h"
 #include <obs-module.h>
 #include <memory>
 
@@ -52,6 +52,7 @@
 #define T_TYPE_TIMER                T_("Type.Timer")
 #define T_ENDVALUE                  T_("EndValue")
 #define T_INITIALVALUE              T_("InitialValue")
+#define T_TARGETSCENE               T_("TargetScene")
 #define T_HK_ENABLE                 T_("Hotkey.Enable")
 #define T_HK_RESET                  T_("Hotkey.Reset")
 
@@ -75,6 +76,7 @@ extern "C" {
 void stopwatch_enable_hotkey_pressed(void *data, obs_hotkey_id id, obs_hotkey_t *hotkey, bool pressed);
 void stopwatch_reset_hotkey_pressed(void *data, obs_hotkey_id id, obs_hotkey_t *hotkey, bool pressed);
 bool stopwatch_type_changed(obs_properties_t *props, obs_property_t *property, obs_data_t *settings);
+bool stopwatch_configure_actions_pressed(obs_properties_t *props, obs_property_t *property, void *data);
 
 
 /**
@@ -125,9 +127,6 @@ StopwatchSource::StopwatchSource(obs_source_t *source, obs_data_t *settings)
     initStopwatch(settings);
     initHotkeys();
 
-    //getStopwatch()->addAction(new SwitchSceneAction(*getStopwatch()));
-    getStopwatch()->addEventListener(new LoggingEventListener());
-
     updateText();
 }
 
@@ -145,6 +144,16 @@ void StopwatchSource::initStopwatch(obs_data_t *settings)
         uint64_t maxValue = settings_get_end_value_as_int(settings);
         m_stopwatch = std::make_shared<Stopwatch>(maxValue); 
     }
+
+    // Init scene switch action
+    std::string targetScene = settings_get_target_scene(settings);
+    if (!targetScene.empty)
+    {
+        getStopwatch()->addAction(new SwitchSceneAction(*getStopwatch()));
+    }
+
+    // Init logging event listener
+    getStopwatch()->addEventListener(new LoggingEventListener());
 }
 
 
@@ -295,6 +304,15 @@ obs_properties_t *StopwatchSource::getProperties()
     prop = obs_properties_add_text(props, S_INITIALVALUE, T_INITIALVALUE, OBS_TEXT_DEFAULT);
     obs_property_set_visible(prop, false);
 
+    prop = obs_properties_add_list(props, S_TARGETSCENE, T_TARGETSCENE, OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_STRING);
+    obs_property_list_add_string(prop, "", NULL);
+    BPtr<char *> scenes = obs_frontend_get_scene_names();
+    char *scene = &scenes;
+    for (scene : scenes)
+    {
+        obs_property_list_add_string(prop, scene.name, scene.name);
+    }
+
     return props;
 }
 
@@ -313,6 +331,12 @@ bool stopwatch_type_changed(obs_properties_t *props, obs_property_t *property, o
     set_property_visibility(props, S_INITIALVALUE, type == StopwatchType::Timer);
 
     UNUSED_PARAMETER(property);
+    return true;
+}
+
+
+bool stopwatch_configure_actions_pressed(obs_properties_t *props, obs_property_t *property, void *data)
+{
     return true;
 }
 

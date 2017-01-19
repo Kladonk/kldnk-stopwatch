@@ -17,22 +17,26 @@
 ******************************************************************************/
 
 #include "SwitchSceneAction.h"
-//#include <util/util.hpp>
-//#include <../UI/obs-frontend-api/obs-frontend-api.h>
-//#include <string>
+#include <util/util.hpp>
+#include <../UI/obs-frontend-api/obs-frontend-api.h>
 
 void SwitchSceneAction::execute()
 {
-    // TODO
+    struct obs_frontend_source_list sources = {};
+    obs_frontend_get_scenes(&sources);
 
-    //struct obs_frontend_source_list sources = {};
-    //obs_frontend_get_scenes(&sources);
+    obs_source_t *source = NULL;
+    size_t i = 0;
 
-    //for (size_t i = 0; i < sources.sources.num; i++) {
-    //    obs_source_t *source = sources.sources.array[i];
-    //    obs_frontend_set_current_scene(source);
-    //    break;
-    //}
+    while (!source && i++ < sources.sources.num)
+    {
+        obs_source_t *scene = sources.sources.array[i];
+        if (m_targetScene == scene.name)
+        {
+            m_targetScene = scene;
+        }
+    }
+    obs_frontend_set_current_source(source);
 
-    //obs_frontend_source_list_free(&sources);
+    obs_frontend_source_list_free(&sources);
 }
