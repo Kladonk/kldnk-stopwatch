@@ -28,9 +28,11 @@ void SwitchSceneAction::execute()
     }
 
     obs_source_t *scene = obs_get_source_by_name(m_targetScene.c_str());
-    if (scene)
+    obs_source_t *currentScene = obs_frontend_get_current_scene();
+    if (scene && scene != currentScene)
     {
         obs_frontend_set_current_scene(scene);
-        obs_source_release(scene);
     }
+    obs_source_release(scene);
+    obs_source_release(currentScene);
 }

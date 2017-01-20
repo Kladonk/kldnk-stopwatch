@@ -77,7 +77,6 @@ extern "C" {
 void stopwatch_enable_hotkey_pressed(void *data, obs_hotkey_id id, obs_hotkey_t *hotkey, bool pressed);
 void stopwatch_reset_hotkey_pressed(void *data, obs_hotkey_id id, obs_hotkey_t *hotkey, bool pressed);
 bool stopwatch_type_changed(obs_properties_t *props, obs_property_t *property, obs_data_t *settings);
-bool stopwatch_configure_actions_pressed(obs_properties_t *props, obs_property_t *property, void *data);
 
 
 /**
@@ -334,12 +333,6 @@ bool stopwatch_type_changed(obs_properties_t *props, obs_property_t *property, o
     set_property_visibility(props, S_INITIALVALUE, type == StopwatchType::Timer);
 
     UNUSED_PARAMETER(property);
-    return true;
-}
-
-
-bool stopwatch_configure_actions_pressed(obs_properties_t *props, obs_property_t *property, void *data)
-{
     return true;
 }
 
