@@ -52,7 +52,7 @@ time_info_t millis_to_time(int64_t millis)
     millis /= 60;
     ti.minutes = millis % 60;
     millis /= 60;
-    ti.hours = millis % 60;
+    ti.hours = millis;
     return ti;
 }
 
